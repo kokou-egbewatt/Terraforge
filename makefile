@@ -14,14 +14,16 @@ SCRIPTS_PATH := ci/scripts
 ifneq ("$(wildcard /bin/bash)", "")
 SHELL := /bin/bash -o pipefail
 endif
-BUILDDIR ?= bin
-BINDIR ?= /usr/local/bin
-DATADIR ?= /usr/local/share/terraforge
+BUILDDIR ?= "build"
+BINDIR ?= "/usr/local/bin"
+DATADIR ?= "/usr/local/share/terraforge"
 ADDFLAGS ?=
 TERRAFORGE_DEBUG ?= false
 
 # Suppress directory messages
 MAKEFLAGS += --no-print-directory
+# Suppress command outputs
+MAKEFLAGS += --silent
 
 # Ensure the build directory exists
 $(BUILDDIR):
@@ -33,9 +35,9 @@ clean: ## removes all build artifacts
 	rm -rf $(BUILDDIR)
 
 .PHONY: build
-build: $(BUILDDIR) ## builds the binary in development mode
+build: clean $(BUILDDIR) ## builds the binary in development mode
 	@echo "---> Building terraforge executables in development mode."
-	@$(SCRIPTS_PATH)/terraforge-build.sh $(BUILDDIR) $(ADDFLAGS)
+	$(SCRIPTS_PATH)/terraforge-build.sh $(BUILDDIR) $(ADDFLAGS)
 
 .PHONY: release 
 release: $(BUILDDIR) ## builds the binary for release
@@ -55,15 +57,17 @@ docker: ## builds the Docker image
 .PHONY: install
 install: build ## installs the binary and data files
 	@echo "---> Installing terraforge binary and data files."
-	install -m 755 $(BUILDDIR)/terraforge $(BINDIR)/terraforge
-	install -d $(DATADIR)
-	cp -r data/* $(DATADIR)
+	mv $(BUILDDIR)/terraforge* $(BUILDDIR)/terraforge
+	sudo install -m 755 $(BUILDDIR)/terraforge $(BINDIR)/terraforge
+	sudo mkdir -p $(DATADIR) 
+	sudo install -d $(DATADIR)
+# sudo cp -r data/* $(DATADIR)
 
 .PHONY: uninstall
 uninstall: ## removes installed files
 	@echo "---> Uninstalling terraforge."
-	rm -f $(BINDIR)/terraforge
-	rm -rf $(DATADIR)
+	sudo rm -f $(BINDIR)/terraforge
+	sudo rm -rf $(DATADIR)
 
 # Default target: 
 .PHONY: help

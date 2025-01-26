@@ -1,6 +1,8 @@
 module github.com/kokou-egbewatt/terraforge
 
-go 1.18
+go 1.21
+
+toolchain go1.21.5
 
 require (
 	github.com/Masterminds/semver/v3 v3.3.1

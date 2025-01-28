@@ -34,6 +34,7 @@ $(BUILD_DIR):
 clean: ## removes all build artifacts
 	@echo "---> Cleaning up executables and build artifacts."
 	rm -rf $(BUILD_DIR)
+	rm -rf $(DIST_DIR)
 
 .PHONY: build
 build: clean $(BUILD_DIR) ## builds the binary in development mode

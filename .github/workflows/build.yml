@@ -30,6 +30,11 @@ jobs:
       - name: Display Go version
         run: go version
 
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.600
+
       - name: Build Terraforge
         run: |
           chmod +x ci/scripts/terraforge-build.sh
